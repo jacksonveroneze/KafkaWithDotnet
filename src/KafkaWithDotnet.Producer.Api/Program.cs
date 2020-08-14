@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using KafkaWithDotnet.Producer.Api.Extensions;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace KafkaWithDotnet.Producer.Api
 {
@@ -13,6 +9,10 @@ namespace KafkaWithDotnet.Producer.Api
     {
         public static void Main(string[] args)
         {
+            Log.Logger = SerilogExtensions.FactoryLogger();
+
+            Log.Information("Starting up");
+
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -21,6 +21,7 @@ namespace KafkaWithDotnet.Producer.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseSerilog();
                 });
     }
 }
