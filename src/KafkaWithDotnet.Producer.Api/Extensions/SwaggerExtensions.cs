@@ -13,8 +13,8 @@ namespace KafkaWithDotnet.Producer.Api.Extensions
             {
                 c.SwaggerDoc("v1", new OpenApiInfo()
                 {
-                    Title = "Data Signer - NET",
-                    Description = "Data Signer - NET.",
+                    Title = "Kafka With .NET",
+                    Description = "Kafka With .NET",
                     Contact = new OpenApiContact() {Name = "Jackson Veroneze", Email = "jackson@jacksonveroneze.com"},
                     License = new OpenApiLicense() {Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT")}
                 });
