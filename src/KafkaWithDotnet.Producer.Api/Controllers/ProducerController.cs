@@ -24,14 +24,13 @@ namespace KafkaWithDotnet.Producer.Api.Controllers
         //   logger:
         //     The logger param.
         //
-        public ProducerController(ILogger<ProducerController> logger)
+        //   config:
+        //     The config param.
+        //
+        public ProducerController(ILogger<ProducerController> logger, ProducerConfig config)
         {
             _logger = logger;
-
-            _config = new ProducerConfig
-            {
-                BootstrapServers = "localhost:9092"
-            };
+            _config = config;
         }
 
         //
@@ -49,12 +48,16 @@ namespace KafkaWithDotnet.Producer.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBodyAttribute] ProducerCommand command)
         {
+            string data = JsonSerializer.Serialize(command);
+
+            _logger.LogInformation("Producer: {0}", data);
+
             using IProducer<Null, string> producer = new ProducerBuilder<Null, string>(_config).Build();
 
             DeliveryResult<Null, string> result = await producer.ProduceAsync("new-producer",
-                new Message<Null, string> {Value = JsonSerializer.Serialize(command)});
+                new Message<Null, string> {Value = data});
 
-            return Ok(new ProducerResult());
+            return Ok(new ProducerResult() { Result = result.Topic});
         }
     }
 }

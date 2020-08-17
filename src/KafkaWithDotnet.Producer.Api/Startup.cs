@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using KafkaWithDotnet.Producer.Api.Configuration;
 using KafkaWithDotnet.Producer.Api.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,7 +21,7 @@ namespace KafkaWithDotnet.Producer.Api
         {
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.AddServices();
+            services.AddServices(Configuration);
             services.AddSwaggerConfiguration();
             services.AddResponseCompression();
             services.Configure<GzipCompressionProviderOptions>(options =>
