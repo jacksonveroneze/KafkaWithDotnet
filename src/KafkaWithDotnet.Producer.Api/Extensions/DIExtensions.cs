@@ -13,7 +13,7 @@ namespace KafkaWithDotnet.Producer.Api.Extensions
             
             configuration.Bind("KafkaSettings", settings);
             
-            services.AddTransient<ProducerConfig>(x => new ProducerConfig() {BootstrapServers = settings.Host });
+            services.AddTransient<ProducerConfig>(x => new ProducerConfig() { BootstrapServers = settings.Host });
         }
     }
 }
