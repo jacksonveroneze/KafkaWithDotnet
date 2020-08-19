@@ -1,8 +1,7 @@
 ﻿using System.Net.Mime;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Confluent.Kafka;
 using KafkaWithDotnet.Producer.Api.Domain.Command;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,7 +13,7 @@ namespace KafkaWithDotnet.Producer.Api.Controllers
     public class ProducerController : ControllerBase
     {
         private readonly ILogger<ProducerController> _logger;
-        private readonly ProducerConfig _config;
+        private readonly IMediator _mediator;
 
         //
         // Summary:
@@ -24,13 +23,13 @@ namespace KafkaWithDotnet.Producer.Api.Controllers
         //   logger:
         //     The logger param.
         //
-        //   config:
-        //     The config param.
+        //   mediator:
+        //     The mediator param.
         //
-        public ProducerController(ILogger<ProducerController> logger, ProducerConfig config)
+        public ProducerController(ILogger<ProducerController> logger, IMediator mediator)
         {
             _logger = logger;
-            _config = config;
+            _mediator = mediator;
         }
 
         //
@@ -38,26 +37,15 @@ namespace KafkaWithDotnet.Producer.Api.Controllers
         //     /// Method responsible for action: New (POST). ///
         //
         // Parameters:
-        //   command:
-        //     The command param.
+        //   request:
+        //     The request param.
         //
         [HttpPost("new")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(ProducerResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBodyAttribute] ProducerCommand command)
-        {
-            string data = JsonSerializer.Serialize(command);
-
-            _logger.LogInformation("Producer: {0}", data);
-
-            using IProducer<Null, string> producer = new ProducerBuilder<Null, string>(_config).Build();
-
-            DeliveryResult<Null, string> result = await producer.ProduceAsync("new-producer",
-                new Message<Null, string> {Value = data});
-
-            return Ok(new ProducerResult() { Result = result.Topic});
-        }
+        public async Task<IActionResult> Create([FromBodyAttribute] ProducerCommand request)
+            => Ok(await _mediator.Send(request));
     }
 }

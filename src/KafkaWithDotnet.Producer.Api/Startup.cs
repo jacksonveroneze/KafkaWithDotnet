@@ -1,6 +1,6 @@
 using System.IO.Compression;
-using KafkaWithDotnet.Producer.Api.Configuration;
 using KafkaWithDotnet.Producer.Api.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -21,6 +21,7 @@ namespace KafkaWithDotnet.Producer.Api
         {
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.AddMediatR(typeof(Startup));
             services.AddServices(Configuration);
             services.AddSwaggerConfiguration();
             services.AddResponseCompression();
